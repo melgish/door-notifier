@@ -37,7 +37,7 @@ public class SensorClient : ISensorClient
     {
         try
         {
-            return await _httpClient.GetStringAsync(_httpClient.BaseAddress);
+            return await _httpClient.GetStringAsync(string.Empty);
         }
         catch (Exception ex)
         {

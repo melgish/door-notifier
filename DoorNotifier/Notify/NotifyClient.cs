@@ -6,7 +6,7 @@ namespace DoorNotifier.Notify;
 /// <summary>
 /// NotifyClient class is responsible for sending notifications about the state of the garage door.
 /// </summary>
-public class NotifyClient : INotifyClient
+public sealed class NotifyClient : INotifyClient
 {
     private readonly ILogger<NotifyClient> _logger;
     private readonly NotifyOptions _options;
@@ -50,7 +50,7 @@ public class NotifyClient : INotifyClient
         {
             var message = $"The Garage Door is {doorState}";
             var content = new StringContent(message, Encoding.UTF8, "text/plain");
-            var rs = await _httpClient.PostAsync(_httpClient.BaseAddress, content);
+            var rs = await _httpClient.PostAsync(string.Empty, content);
             if (!rs.IsSuccessStatusCode)
             {
                 _logger.LogWarning(LogEvent.SendStatusCode, "Failed to send status {Description}", rs.StatusCode);
