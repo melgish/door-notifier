@@ -1,0 +1,6 @@
+.mono
+.vscode
+bin
+obj
+
+compose.*.yaml

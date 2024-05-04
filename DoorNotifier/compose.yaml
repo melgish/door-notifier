@@ -1,0 +1,6 @@
+services:
+  door-notifier:
+    build: .
+    container_name: "door-notifier"
+    hostname: "door-notifier"
+    image: "127.0.0.1/library/door-notifier:latest"
