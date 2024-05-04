@@ -30,9 +30,11 @@ public class Worker : BackgroundService
         var lastChange = _lastChange;
         var wasNotified = _wasNotified;
 
-        var payload = await _sensorClient.GetAsync();
-        _logger.LogInformation(LogEvent.DoorState, "Door state {Description}", payload);
         var now = DateTime.UtcNow;
+        var elapsed = now - lastChange;
+
+        var payload = await _sensorClient.GetAsync();
+        _logger.LogInformation(LogEvent.DoorState, "Door state {Description} {Elapsed:g}", payload, elapsed);
         var isClosed = payload == SensorClient.CLOSED;
         var isChange = wasClosed != isClosed;
 
@@ -52,7 +54,6 @@ public class Worker : BackgroundService
             return;
         }
 
-        var elapsed = now - lastChange;
         if (!isClosed && !wasNotified && elapsed >= _notifyClient.After)
         {
             _logger.LogDebug(LogEvent.DoorLeftOpen, "Door was left open");
