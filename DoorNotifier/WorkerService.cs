@@ -1,11 +1,11 @@
-using DoorNotifier.Sensor;
 using DoorNotifier.Notify;
+using DoorNotifier.Sensor;
 
 namespace DoorNotifier;
 
-public class Worker : BackgroundService
+public class WorkerService : BackgroundService
 {
-    private readonly ILogger<Worker> _logger;
+    private readonly ILogger<WorkerService> _logger;
     private readonly ISensorClient _sensorClient;
     private readonly INotifyClient _notifyClient;
 
@@ -13,8 +13,8 @@ public class Worker : BackgroundService
     private bool _wasNotified;
     private DateTime _lastChange;
 
-    public Worker(
-        ILogger<Worker> logger,
+    public WorkerService(
+        ILogger<WorkerService> logger,
         ISensorClient sensorClient,
         INotifyClient notifyClient
     )

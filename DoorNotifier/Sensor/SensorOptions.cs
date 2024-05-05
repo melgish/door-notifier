@@ -10,8 +10,9 @@ public sealed class SensorOptions
     public const string Sensor = "Sensor";
 
     /// <summary>
-    /// How often to poll for changes
+    /// How often to poll for changes.
     /// </summary>
+    /// <value>The default value is 1 minute</value>
     public TimeSpan Interval { get; set; } = TimeSpan.FromMinutes(1);
 
     /// <summary>

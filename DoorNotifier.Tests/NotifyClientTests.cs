@@ -1,31 +1,32 @@
-using System.Net;
 using DoorNotifier.Notify;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Testing;
-using Moq;
 using Microsoft.Extensions.Options;
+using Moq;
 using Moq.Protected;
+using System.Net;
 
-namespace DoorNotifier.Tests.Notify;
+namespace DoorNotifier.Tests;
 
 public class NotifyClientTests
 {
-    private readonly NotifyOptions _options;
-    private readonly Mock<IOptions<NotifyOptions>> _mockOptions;
     private readonly FakeLogger<NotifyClient> _fakeLogger;
-    private readonly Mock<HttpMessageHandler> _mockHandler;
     private readonly HttpClient _httpClient;
+    private readonly Mock<IOptions<NotifyOptions>> _mockOptions;
+    private readonly Mock<HttpMessageHandler> _mockHandler;
+    private readonly NotifyOptions _options;
 
     public NotifyClientTests()
     {
+        _fakeLogger = new();
+
         _options = new()
         {
             After = TimeSpan.FromMinutes(5),
-            Uri = new Uri("http://ntfy.sh/test-topic")
+            Uri = new Uri("http://127.0.0.1/test-topic")
         };
         _mockOptions = new();
         _mockOptions.Setup(o => o.Value).Returns(_options);
-        _fakeLogger = new();
         _mockHandler = new();
         _httpClient = new(_mockHandler.Object) { BaseAddress = _options.Uri };
     }
@@ -80,7 +81,7 @@ public class NotifyClientTests
     }
 
     [Fact]
-    public async Task PostAsync_Exception_LogsError()
+    public async Task PostAsync_Exception_LogsWarning()
     {
         _mockHandler
           .Protected()

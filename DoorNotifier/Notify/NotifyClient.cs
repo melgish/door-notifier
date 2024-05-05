@@ -41,9 +41,6 @@ public sealed class NotifyClient : INotifyClient
     /// Send the notification.
     /// </summary>
     /// <param name="doorState">The current state of the garage door.</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation of sending the notification.
-    /// </returns>
     public async Task PostAsync(string doorState)
     {
         try

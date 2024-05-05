@@ -1,5 +1,8 @@
 namespace DoorNotifier;
 
+/// <summary>
+/// Constants for logging service events.
+/// </summary>
 internal static class LogEvent
 {
     // 1000-1999 Debug

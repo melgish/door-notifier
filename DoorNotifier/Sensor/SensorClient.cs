@@ -18,6 +18,12 @@ public class SensorClient : ISensorClient
     /// </summary>
     public TimeSpan Interval => _options.Interval;
 
+    /// <summary>
+    /// Initializes a new instance
+    /// </summary>
+    /// <param name="logger">.NET Logger</param>
+    /// <param name="options">Options with URL and Interval values</param>
+    /// <param name="httpClient">Client for making Get requests</param>
     public SensorClient(
         ILogger<SensorClient> logger,
         IOptions<SensorOptions> options,

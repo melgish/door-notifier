@@ -5,7 +5,12 @@ namespace DoorNotifier.Sensor;
 
 internal static class StartupExtensions
 {
-    public static HostApplicationBuilder AddSensorClient(this HostApplicationBuilder builder)
+    /// <summary>
+    /// Sets up required services to add sensor client to DI container
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static void AddSensorClient(this HostApplicationBuilder builder)
     {
         builder
             .Services
@@ -23,7 +28,5 @@ internal static class StartupExtensions
                 new MediaTypeWithQualityHeaderValue("text/plain")
             );
         });
-
-        return builder;
     }
 }
