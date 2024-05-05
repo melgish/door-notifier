@@ -5,7 +5,7 @@ namespace DoorNotifier.Notify;
 public sealed class NotifyOptions
 {
     /// <summary>
-    /// Settings key
+    /// Settings key.
     /// </summary>
     public const string Notify = "Notify";
 
@@ -13,6 +13,7 @@ public sealed class NotifyOptions
     /// How long to wait after door is opened to send
     /// notification.
     /// </summary>
+    /// <value>The default value is 1 hour.</value>
     public TimeSpan After { get; set; } = TimeSpan.FromHours(1);
 
     /// <summary>
@@ -22,7 +23,7 @@ public sealed class NotifyOptions
     public Uri Uri { get; set; } = null!;
 
     /// <summary>
-    /// NTFY authentication token
+    /// NTFY authentication token.
     /// </summary>
     [Required]
     public string Token { get; set; } = null!;

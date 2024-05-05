@@ -1,0 +1,4 @@
+[*.cs]
+# General formatting
+indent_style = space
+indent_size = 4

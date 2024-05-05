@@ -1,6 +1,8 @@
 services:
   door-notifier:
-    build: .
+    build:
+      context: ./DoorNotifier
+      dockerfile: ./Dockerfile
     container_name: "door-notifier"
     hostname: "door-notifier"
     image: "127.0.0.1/library/door-notifier:latest"
