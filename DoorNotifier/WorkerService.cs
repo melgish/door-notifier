@@ -10,7 +10,6 @@ public class WorkerService : BackgroundService
     private readonly INotifyClient _notifyClient;
 
     private bool _wasClosed;
-    private bool _wasNotified;
     private DateTime _lastChange;
 
     public WorkerService(
@@ -26,38 +25,28 @@ public class WorkerService : BackgroundService
 
     private async Task CheckDoorStateAsync()
     {
-        var wasClosed = _wasClosed;
-        var lastChange = _lastChange;
-        var wasNotified = _wasNotified;
-
         var now = DateTime.UtcNow;
-        var elapsed = now - lastChange;
 
+        // Get the current state of the door.
         var payload = await _sensorClient.GetAsync();
-        _logger.LogInformation(LogEvent.DoorState, "Door state {Description} {Elapsed:g}", payload, elapsed);
         var isClosed = payload == SensorClient.CLOSED;
-        var isChange = wasClosed != isClosed;
+        var isChange = _wasClosed != isClosed;
 
-        if (isChange)
-        {
-            _logger.LogDebug(LogEvent.DoorChanged, "Door state has changed");
-            _wasClosed = isClosed;
+        if (isChange) {
             _lastChange = now;
-            _wasNotified = false;
-        }
-
-        if (isClosed && isChange && wasNotified)
-        {
-            _logger.LogDebug(LogEvent.DoorClosed, "Open door was closed");
-            // Send notification that OPEN door has become closed.
+            _wasClosed = isClosed;
+            // Notify on every change...
+            _logger.LogDebug(LogEvent.DoorChanged, "Door state has changed to {Description}", payload);
             await _notifyClient.PostAsync(payload);
-            return;
-        }
+         }
 
-        if (!isClosed && !wasNotified && elapsed >= _notifyClient.After)
-        {
+        var elapsed = now - _lastChange;
+        _logger.LogInformation(LogEvent.DoorState, "Door state {Description} {Elapsed:g}", payload, elapsed);
+        if (!_wasClosed && elapsed > _notifyClient.After) {
+            // Notify again when it has been open for a while.
             _logger.LogDebug(LogEvent.DoorLeftOpen, "Door was left open");
-            _wasNotified = true;
+            // Restart the clock to notify again after another hour.
+            _lastChange = now;
             await _notifyClient.PostAsync(payload);
         }
     }
