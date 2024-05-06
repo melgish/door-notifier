@@ -10,7 +10,7 @@ internal static class StartupExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static void AddSensorClient(this HostApplicationBuilder builder)
+    public static void AddSensorClient(this IHostApplicationBuilder builder)
     {
         builder
             .Services
