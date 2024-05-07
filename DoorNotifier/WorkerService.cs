@@ -8,6 +8,7 @@ public class WorkerService : BackgroundService
     private readonly ILogger<WorkerService> _logger;
     private readonly ISensorClient _sensorClient;
     private readonly INotifyClient _notifyClient;
+    private readonly PeriodicTimer _timer;
 
     private bool _wasClosed;
     private DateTime _lastChange;
@@ -21,6 +22,21 @@ public class WorkerService : BackgroundService
         _logger = logger;
         _sensorClient = sensorClient;
         _notifyClient = notifyClient;
+        _timer = new PeriodicTimer(_sensorClient.Interval);
+    }
+
+    public override void Dispose()
+    {
+        _timer.Dispose();
+        base.Dispose();
+    }
+
+    private async Task SetInitialValuesAsync()
+    {
+        // Before going into the loop, load initial values.
+        var payload = await _sensorClient.GetAsync();
+        _lastChange = DateTime.UtcNow;
+        _wasClosed = payload == SensorClient.CLOSED;
     }
 
     private async Task CheckDoorStateAsync()
@@ -32,17 +48,19 @@ public class WorkerService : BackgroundService
         var isClosed = payload == SensorClient.CLOSED;
         var isChange = _wasClosed != isClosed;
 
-        if (isChange) {
+        if (isChange)
+        {
             _lastChange = now;
             _wasClosed = isClosed;
             // Notify on every change...
             _logger.LogDebug(LogEvent.DoorChanged, "Door state has changed to {Description}", payload);
             await _notifyClient.PostAsync(payload);
-         }
+        }
 
         var elapsed = now - _lastChange;
         _logger.LogInformation(LogEvent.DoorState, "Door state {Description} {Elapsed:g}", payload, elapsed);
-        if (!_wasClosed && elapsed > _notifyClient.After) {
+        if (!_wasClosed && elapsed > _notifyClient.After)
+        {
             // Notify again when it has been open for a while.
             _logger.LogDebug(LogEvent.DoorLeftOpen, "Door was left open");
             // Restart the clock to notify again after another hour.
@@ -56,15 +74,11 @@ public class WorkerService : BackgroundService
         _logger.LogInformation(LogEvent.PollingStarted, "Polling {Description:g}", _sensorClient.Interval);
         try
         {
-            // Before going into the loop, load initial values.
-            var payload = await _sensorClient.GetAsync();
-            _lastChange = DateTime.UtcNow;
-            _wasClosed = payload == SensorClient.CLOSED;
-
-            using var timer = new PeriodicTimer(_sensorClient.Interval);
-            while (await timer.WaitForNextTickAsync(stoppingToken))
+            await SetInitialValuesAsync();
+            while (!stoppingToken.IsCancellationRequested)
             {
                 await CheckDoorStateAsync();
+                await _timer.WaitForNextTickAsync(stoppingToken);
             }
         }
         catch (OperationCanceledException)

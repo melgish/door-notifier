@@ -38,12 +38,14 @@ public class WorkerTests
         var once = true;
         _mockSensorClient
           .Setup(s => s.GetAsync())
-          .Returns(() => {
-            if (once) {
-                once = false;
-                return Task.FromResult(SensorClient.OPEN);
-            }
-            return Task.FromResult(SensorClient.CLOSED);
+          .Returns(() =>
+          {
+              if (once)
+              {
+                  once = false;
+                  return Task.FromResult(SensorClient.OPEN);
+              }
+              return Task.FromResult(SensorClient.CLOSED);
           });
 
 
@@ -57,28 +59,28 @@ public class WorkerTests
         _mockNotifyClient.Verify(n => n.PostAsync(SensorClient.CLOSED), Times.Once);
     }
 
-  [Fact]
-  public async Task ExecuteAsync_WhenDoorIsOpened_ShouldNotifyEveryfter()
-  {
-    var worker = new WorkerService(
-      _fakeLogger,
-      _mockSensorClient.Object,
-      _mockNotifyClient.Object
-    );
+    [Fact]
+    public async Task ExecuteAsync_WhenDoorIsOpened_ShouldNotifyEveryfter()
+    {
+        var worker = new WorkerService(
+          _fakeLogger,
+          _mockSensorClient.Object,
+          _mockNotifyClient.Object
+        );
 
-    // Door starts open, and stays that way.
-    _mockSensorClient
-      .Setup(s => s.GetAsync())
-      .ReturnsAsync(SensorClient.OPEN);
+        // Door starts open, and stays that way.
+        _mockSensorClient
+          .Setup(s => s.GetAsync())
+          .ReturnsAsync(SensorClient.OPEN);
 
 
-    await worker.StartAsync(CancellationToken.None);
-    await Task.Delay(TimeSpan.FromSeconds(1));
-    await worker.StopAsync(CancellationToken.None);
+        await worker.StartAsync(CancellationToken.None);
+        await Task.Delay(TimeSpan.FromSeconds(1));
+        await worker.StopAsync(CancellationToken.None);
 
-    // Assert
-    // 7 is enough to cover 'After'
-    _mockSensorClient.Verify(s => s.GetAsync(), Times.AtLeast(7));
-    _mockNotifyClient.Verify(n => n.PostAsync(SensorClient.OPEN), Times.AtLeast(2));
-  }
+        // Assert
+        // 7 is enough to cover 'After'
+        _mockSensorClient.Verify(s => s.GetAsync(), Times.AtLeast(7));
+        _mockNotifyClient.Verify(n => n.PostAsync(SensorClient.OPEN), Times.AtLeast(2));
+    }
 }
