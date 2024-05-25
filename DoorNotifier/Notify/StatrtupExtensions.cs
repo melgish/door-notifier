@@ -5,7 +5,7 @@ namespace DoorNotifier.Notify;
 
 internal static class StartupExtensions
 {
-    public static HostApplicationBuilder AddNotifyClient(this HostApplicationBuilder builder)
+    public static void AddNotifyClient(this IHostApplicationBuilder builder)
     {
         builder
             .Services
@@ -25,7 +25,5 @@ internal static class StartupExtensions
             httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", options.Token);
         });
-
-        return builder;
     }
 }
