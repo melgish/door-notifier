@@ -2,7 +2,7 @@
 
 namespace DoorNotifier.Sensor;
 
-public sealed class SensorOptions
+public sealed record SensorOptions
 {
     /// <summary>
     /// Settings key
@@ -13,7 +13,7 @@ public sealed class SensorOptions
     /// How often to poll for changes.
     /// </summary>
     /// <value>The default value is 1 minute</value>
-    public TimeSpan Interval { get; set; } = TimeSpan.FromMinutes(1);
+    public TimeSpan Interval { get; init; } = TimeSpan.FromMinutes(1);
 
     /// <summary>
     /// The web address to query.

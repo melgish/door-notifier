@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+
 using System.Net.Http.Headers;
 
 namespace DoorNotifier.Sensor;
