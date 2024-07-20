@@ -2,7 +2,7 @@
 
 namespace DoorNotifier.Notify;
 
-public sealed class NotifyOptions
+public sealed record NotifyOptions
 {
     /// <summary>
     /// Settings key.
@@ -14,17 +14,17 @@ public sealed class NotifyOptions
     /// notification.
     /// </summary>
     /// <value>The default value is 1 hour.</value>
-    public TimeSpan After { get; set; } = TimeSpan.FromHours(1);
+    public TimeSpan After { get; init; } = TimeSpan.FromHours(1);
 
     /// <summary>
     /// The NTFY address/topic for posting notifications.
     /// </summary>
     [Required]
-    public Uri Uri { get; set; } = null!;
+    public Uri Uri { get; init; } = null!;
 
     /// <summary>
     /// NTFY authentication token.
     /// </summary>
     [Required]
-    public string Token { get; set; } = null!;
+    public string Token { get; init; } = string.Empty;
 }
