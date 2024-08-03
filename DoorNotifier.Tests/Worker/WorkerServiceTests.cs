@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 using Moq;
 
-namespace DoorNotifier.Tests;
+namespace DoorNotifier.Tests.Worker;
 
 public sealed class WorkerTests
 {
@@ -64,7 +64,7 @@ public sealed class WorkerTests
         var calls = 0;
         _mockSensorClient
           .Setup(s => s.GetAsync())
-          .ReturnsAsync(() => (0 == calls++) ? SensorClient.OPEN :SensorClient.CLOSED);
+          .ReturnsAsync(() => (0 == calls++) ? SensorClient.OPEN : SensorClient.CLOSED);
 
         // Act
         await RunFor(TimeSpan.FromSeconds(1));
