@@ -1,6 +1,6 @@
 # door-notifier
  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
- [![.NET](https://github.com/melgish/door-notifier/actions/workflows/dotnet.yml/badge.svg)](https://github.com/melgish/door-notifier/actions/workflows/dotnet.yaml)
+ [![.NET](https://github.com/melgish/door-notifier/actions/workflows/dotnet.yaml/badge.svg)](https://github.com/melgish/door-notifier/actions/workflows/dotnet.yaml)
  [![CodeQL](https://github.com/melgish/door-notifier/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/melgish/door-notifier/actions/workflows/github-code-scanning/codeql)
  [![codecov](https://codecov.io/github/melgish/door-notifier/graph/badge.svg?token=Q7HPKX12NH)](https://codecov.io/github/melgish/door-notifier)
 
