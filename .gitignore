@@ -486,3 +486,4 @@ $RECYCLE.BIN/
 .mono
 compose.*.yaml
 appsettings.*.json
+.coverage

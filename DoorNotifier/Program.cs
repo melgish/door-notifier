@@ -1,8 +1,9 @@
 using System.Reflection;
 
-using DoorNotifier;
+using DoorNotifier.Extensions;
 using DoorNotifier.Notify;
 using DoorNotifier.Sensor;
+using DoorNotifier.Worker;
 
 using Serilog;
 
@@ -26,10 +27,27 @@ try
       .ReadFrom.Services(services)
     );
 
-    builder.AddNotifyClient();
-    builder.AddSensorClient();
+    // Notify
+    builder.Services.AddHttpClient<INotifyClient, NotifyClient>();
+    builder.Services.AddOptions<NotifyOptions>()
+        .Bind(builder.Configuration.GetSection("Notify"))
+        .ValidateDataAnnotations()
+        .ValidateOnStart();
 
-    builder.Services.AddHostedService<WorkerService>();
+    // Sensor
+    builder.Services.AddHttpClient<ISensorClient, SensorClient>();
+    builder.Services.AddOptions<SensorOptions>()
+        .Bind(builder.Configuration.GetSection("Sensor"))
+        .ValidateDataAnnotations()
+        .ValidateOnStart();
+
+    // Worker
+    builder.Services
+        .AddHostedService<WorkerService>()
+        .AddOptions<WorkerOptions>()
+        .Bind(builder.Configuration.GetSection("Worker"))
+        .ValidateDataAnnotations()
+        .ValidateOnStart();
 
     var host = builder.Build();
     host.Run();
@@ -42,4 +60,3 @@ finally
 {
     Log.CloseAndFlush();
 }
-

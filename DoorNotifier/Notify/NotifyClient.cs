@@ -1,24 +1,26 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Net.Mime;
 using System.Text;
 
+using Microsoft.Extensions.Options;
+
 namespace DoorNotifier.Notify;
+
+internal interface INotifyClient
+{
+    /// <summary>
+    /// Send the notification.
+    /// </summary>
+    /// <param name="doorState">The current state of the garage door.</param>
+    Task PostAsync(string doorState);
+}
 
 /// <summary>
 /// NotifyClient class is responsible for sending notifications about the state of the garage door.
 /// </summary>
-public sealed class NotifyClient : INotifyClient
+internal sealed class NotifyClient : INotifyClient
 {
     private readonly ILogger<NotifyClient> _logger;
-    private readonly NotifyOptions _options;
     private readonly HttpClient _httpClient;
-
-    /// <summary>
-    /// Get how long to wait for notification.
-    /// </summary>
-    /// <value>
-    /// The time span after which the notification will be sent.
-    /// </value>
-    public TimeSpan After => _options.After;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotifyClient"/> class.
@@ -27,14 +29,17 @@ public sealed class NotifyClient : INotifyClient
     /// <param name="options">The options instance containing the notification settings.</param>
     /// <param name="httpClient">The HTTP client instance to send the notification request.</param>
     public NotifyClient(
-        ILogger<NotifyClient> logger,
         IOptions<NotifyOptions> options,
+        ILogger<NotifyClient> logger,
         HttpClient httpClient
     )
     {
-        _logger = logger;
-        _options = options.Value;
         _httpClient = httpClient;
+        _httpClient.BaseAddress = options.Value.Uri;
+        _httpClient.DefaultRequestHeaders.Accept.Clear();
+        _httpClient.DefaultRequestHeaders.Accept.Add(new(MediaTypeNames.Application.Json));
+        _httpClient.DefaultRequestHeaders.Authorization = new("Bearer", options.Value.Token);
+        _logger = logger;
     }
 
     /// <summary>

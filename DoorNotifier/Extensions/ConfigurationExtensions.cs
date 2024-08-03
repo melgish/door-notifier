@@ -2,6 +2,8 @@ using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Memory;
 
+namespace DoorNotifier.Extensions;
+
 internal static class ConfigurationExtensions
 {
     /// <summary>
