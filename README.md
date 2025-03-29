@@ -4,9 +4,13 @@
  [![CodeQL](https://github.com/melgish/door-notifier/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/melgish/door-notifier/actions/workflows/github-code-scanning/codeql)
  [![codecov](https://codecov.io/github/melgish/door-notifier/graph/badge.svg?token=Q7HPKX12NH)](https://codecov.io/github/melgish/door-notifier)
 
-
 A simple service to poll my garage door sensor and send me a notification when
 I leave it open for too long
+
+## 2025-03-29 Rewrite in Go
+
+I rewrote this project using go, and any further updates will be made in [that repository](https://github.com/melgish/door-notifier-go).
+
 
 ## Configuration
 
